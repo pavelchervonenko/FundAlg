@@ -2,17 +2,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <errno.h>
 
 typedef enum
 {
     SUCCESS,
+    FACTORIAL,
+    HEX_DIGITS,
+    NUMBER_IS_COMPOSITE,
+    NUMBER_IS_PRIME,
     ERROR_UNKNOWN_ARGUMENT,
     ERROR_UNKNOWN_FLAG,
     ERROR_OUT_OF_RANGE,
     ERROR_NO_MULTIPLES,
     ERROR_NOT_PRIME,
     ERROR_NOT_PRIME_NOT_COMPOSITE,
+    ERROR_NEGATIVE_VALUE_X,
     ERROR
 } status_return;
 
@@ -37,6 +41,10 @@ int fing_flag(const char *arg, const char **flags_array, int flags_array_size)
 
 status_return function_h(long long x)
 {
+    if (x <= 0)
+    {
+        return ERROR_OUT_OF_RANGE;
+    }
     int flag = 0;
     for (int i = 1; i <= 100; i++)
     {
@@ -48,10 +56,8 @@ status_return function_h(long long x)
     }
     if (!flag)
     {
-        printf("No multiples of %lld within 100.\n", x);
         return ERROR_NO_MULTIPLES;
     }
-    printf("\n");
     return SUCCESS;
 }
 
@@ -65,18 +71,17 @@ status_return function_p(long long x)
     {
         if (abs(x) % i == 0)
         {
-            printf("Number %lld is composite.\n", x);
-            return SUCCESS;
+            printf("%lld", x);
+            return NUMBER_IS_COMPOSITE;
         }
     }
-    printf("Number %lld is prime.\n", x);
-    return SUCCESS;
+    printf("%lld", x);
+    return NUMBER_IS_PRIME;
 }
 
 status_return function_s(long long x)
 {
     int flag = 0;
-    printf("Hex digits: ");
     for (int i = (sizeof(x) * 8 - 4); i >= 0; i -= 4)
     {
         int digit = (x >> i) & 0xF;
@@ -90,7 +95,6 @@ status_return function_s(long long x)
     {
         printf("0");
     }
-    printf("\n");
     return SUCCESS;
 }
 
@@ -102,10 +106,11 @@ status_return function_e(long long x)
     }
     for (int base = 1; base <= 10; base++)
     {
-        printf("Base %d: ", base);
+        long long result = base;
         for (int i = 1; i <= x; i++)
         {
-            printf("%d^%d=%g ", base, i, pow(base, i));
+            result *= base;
+            printf("%lld ", result);
         }
         printf("\n");
     }
@@ -116,10 +121,10 @@ status_return function_a(long long x)
 {
     if (x < 1)
     {
-        return ERROR_UNKNOWN_ARGUMENT;
+        return ERROR_NEGATIVE_VALUE_X;
     }
     int sum = (x * (x + 1)) / 2;
-    printf("Sum of numbers 1 to %lld is %d\n", x, sum);
+    printf("%d\n", sum);
     return SUCCESS;
 }
 
@@ -127,7 +132,7 @@ status_return function_f(long long x)
 {
     if (x < 0)
     {
-        return ERROR_UNKNOWN_ARGUMENT;
+        return ERROR_NEGATIVE_VALUE_X;
     }
     if (x > 12)
     {
@@ -138,6 +143,6 @@ status_return function_f(long long x)
     {
         factorial *= i;
     }
-    printf("Factorial of %lld is %d\n", x, factorial);
-    return SUCCESS;
+    printf("%d", factorial);
+    return FACTORIAL;
 }
