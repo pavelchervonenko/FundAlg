@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
         printf(" - This number is composite\n");
         break;
     case NUMBER_IS_PRIME:
-        printf(" - This number is prime");
+        printf(" - This number is prime\n");
         break;
     case ERROR_NOT_PRIME_NOT_COMPOSITE:
         printf("ERROR: This digit is not prime and not composite\n");

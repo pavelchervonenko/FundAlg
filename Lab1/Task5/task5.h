@@ -1,7 +1,8 @@
-#include <stdio.h>
 #include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <limits.h>
+#include <float.h>
 
 typedef enum
 {
@@ -134,29 +135,63 @@ status_return sum_c(const double x, const double epsilon, double *result)
     }
 
     double sum = 0.0;
-    int n = 1;
-    double current = 1.0;
+    double current = 1.0; // Начинаем с первого элемента ряда
+    int n = 1;            // Начинаем с n = 1, потому что первый элемент соответствует n = 0
+
     while (fabs(current) >= epsilon)
     {
-        sum += current;
-        n++;
+        sum += current; // Обновляем сумму
+
+        // Переход к следующему члену
         double fact_n = factorial(n);
         double fact_3n = factorial(3 * n);
 
-        if (fact_n == 0 || fact_3n == 0)
+        // Проверка на переполнение
+        if (fact_n == 0 || fact_3n == 0 || fact_3n > DBL_MAX / (pow(3, 3 * n) * pow(fact_n, 3) * pow(x, 2 * n)))
         {
             return OVERFLOF;
         }
-        current = (pow(3, 3 * n) * pow(fact_n, 3) * pow(x, 2 * n)) / fact_3n;
-        if (fabs(current) == INFINITY)
-        {
-            return OVERFLOF;
-        }
+
+        current = (pow(3, 3 * n) * pow(fact_n, 3) * pow(x, 2 * n)) / fact_3n; // Новый член ряда
+
+        n++; // Увеличиваем n для следующего члена
     }
 
-    *result = sum;
-    return SUCCSES;
+    *result = sum;  // Записываем результат
+    return SUCCSES; // Возвращаем статус успеха
 }
+
+// status_return sum_c(const double x, const double epsilon, double *result)
+// {
+//     if (epsilon <= 0 || result == NULL)
+//     {
+//         return ERROR_INPUT;
+//     }
+
+//     double sum = 0.0;
+//     int n = 1;
+//     double current = 1.0;
+//     while (fabs(current) >= epsilon)
+//     {
+//         sum += current;
+//         n++;
+//         double fact_n = factorial(n);
+//         double fact_3n = factorial(3 * n);
+
+//         if (fact_n == 0 || fact_3n == 0)
+//         {
+//             return OVERFLOF;
+//         }
+//         current = (pow(3, 3 * n) * pow(fact_n, 3) * pow(x, 2 * n)) / fact_3n;
+//         if (fabs(current) == INFINITY)
+//         {
+//             return OVERFLOF;
+//         }
+//     }
+
+//     *result = sum;
+//     return SUCCSES;
+// }
 
 status_return sum_d(const double x, const double epsilon, double *result)
 {

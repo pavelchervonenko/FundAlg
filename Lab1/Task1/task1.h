@@ -63,11 +63,12 @@ status_return function_h(long long x)
 
 status_return function_p(long long x)
 {
-    if (x == 0 || x == 1)
+    if (x == 1 || x <= 0)
     {
         return ERROR_NOT_PRIME_NOT_COMPOSITE;
     }
-    for (int i = 2; i <= sqrt(x); i++)
+
+    for (int i = 2; i * i <= x; i++)
     {
         if (abs(x) % i == 0)
         {
